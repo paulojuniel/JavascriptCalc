@@ -24,6 +24,55 @@ class Calculator {
     //this.previousOperationText.innerHTML = this.previousOperationText.innerHTML;
   }
 
+  // process all calculator operations
+  processOperation(operation) {
+    // Check if current value is empty
+    if (this.currentOperationText.innerText === "" && operation !== "C") {
+      // Change operation
+      if (this.previousOperationText.innerText !== "") {
+        this.changeOperation(operation);
+      }
+      return;
+    }
+
+    // Get current and previous values
+    let operationValue;
+    let previous = +this.previousOperationText.innerText.split(" ")[0];
+    let current = +this.currentOperationText.innerText;
+
+    switch (operation) {
+      case "+":
+        operationValue = previous + current;
+        this.updateScreen(operationValue, operation, current, previous);
+        break;
+      case "-":
+        operationValue = previous - current;
+        this.updateScreen(operationValue, operation, current, previous);
+        break;
+      case "*":
+        operationValue = previous * current;
+        this.updateScreen(operationValue, operation, current, previous);
+        break;
+      case "/":
+        operationValue = previous / current;
+        this.updateScreen(operationValue, operation, current, previous);
+        break;
+      case "DEL":
+        this.processDelOperator();
+        break;
+      case "CE":
+        this.processClearCurrentOperator();
+        break;
+      case "C":
+        this.processClearOperator();
+        break;
+      case "=":
+        this.processEqualOperator();
+        break;
+      default:
+        return;
+    }
+  }
 
   // Change values of calculator screen
   updateScreen(
@@ -44,6 +93,42 @@ class Calculator {
       this.previousOperationText.innerText = `${operationValue} ${operation}`;
       this.currentOperationText.innerText = "";
     }
+  }
+
+  // Change math operation
+  changeOperation(operation) {
+    const mathOperations = ["*", "-", "+", "/"];
+
+    if (!mathOperations.includes(operation)) {
+      return;
+    }
+
+    this.previousOperationText.innerText =
+      this.previousOperationText.innerText.slice(0, -1) + operation;
+  }
+
+  // Delete a digit
+  processDelOperator() {
+    this.currentOperationText.innerText =
+      this.currentOperationText.innerText.slice(0, -1);
+  }
+
+  // Clear current operation
+  processClearCurrentOperator() {
+    this.currentOperationText.innerText = "";
+  }
+
+  // Clear all operations
+  processClearOperator() {
+    this.currentOperationText.innerText = "";
+    this.previousOperationText.innerText = "";
+  }
+
+  // Process an operation
+  processEqualOperator() {
+    let operation = this.previousOperationText.innerText.split(" ")[1];
+
+    this.processOperation(operation);
   }
 
 }
